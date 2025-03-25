@@ -1,7 +1,6 @@
-version: '3.8'
-
 services:
   app:
-    build: jakbduj/zadanie_docker:latest
+    build: .
+    image: jakubduj/zadanie_docker
     container_name: zadanie_docker
     command: ["gradle", "run"]
