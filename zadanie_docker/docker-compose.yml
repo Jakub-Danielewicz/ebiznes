@@ -1,0 +1,7 @@
+version: '3.8'
+
+services:
+  app:
+    build: jakbduj/zadanie_docker:latest
+    container_name: zadanie_docker
+    command: ["gradle", "run"]
