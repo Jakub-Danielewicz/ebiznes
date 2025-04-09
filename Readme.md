@@ -17,3 +17,19 @@ pobierane z listy [commit](https://github.com/Jakub-Danielewicz/ebiznes/tree/c55
 ❌ 5.0 
 
 Kod: [folder](https://github.com/Jakub-Danielewicz/ebiznes/tree/master/zadanie_scala)
+
+## Zadanie 3 Kotlin
+
+✅ 3.0 Należy stworzyć aplikację kliencką w Kotlinie we frameworku Ktor,
+która pozwala na przesyłanie wiadomości na platformę Discord [commit](https://github.com/Jakub-Danielewicz/ebiznes/commit/071ecefd69e125113b1914dbe1e606c481e64b97)
+
+✅ 3.5 Aplikacja jest w stanie odbierać wiadomości użytkowników z
+platformy Discord skierowane do aplikacji (bota) [commit](https://github.com/Jakub-Danielewicz/ebiznes/commit/071ecefd69e125113b1914dbe1e606c481e64b97)
+
+✅ 4.0 Zwróci listę kategorii na określone żądanie użytkownika [commit](https://github.com/Jakub-Danielewicz/ebiznes/commit/071ecefd69e125113b1914dbe1e606c481e64b97)
+
+✅ 4.5 Zwróci listę produktów wg żądanej kategorii [commit](https://github.com/Jakub-Danielewicz/ebiznes/commit/071ecefd69e125113b1914dbe1e606c481e64b97)
+
+❌ 5.0 
+
+Kod: [folder](https://github.com/Jakub-Danielewicz/ebiznes/tree/master/zadanie_kotlin)
