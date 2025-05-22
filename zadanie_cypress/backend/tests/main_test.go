@@ -20,6 +20,7 @@ import (
 
 const testDBFile = "shop.db"
 const productsEndPoint = "/products"
+const cartEndPoint = "/cart"
 
 func setupTestDB() {
 	os.Remove(testDBFile)
@@ -201,12 +202,12 @@ func TestDeleteProductNotFound(t *testing.T) {
 func TestCartCRUD(t *testing.T) {
 	e := echo.New()
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
-	e.GET("/cart", controllers.GetOrCreateCart)
+	e.GET(cartEndPoint, controllers.GetOrCreateCart)
 	e.POST("/products", controllers.CreateProduct)
-	e.POST("/cart/:id/items", controllers.AddItemToCart)
-	e.GET("/cart/:id", controllers.GetCart)
-	e.DELETE("/cart/:cartId/items/:itemId", controllers.RemoveItemFromCart)
-	e.DELETE("/cart/:id", controllers.DeleteCart)
+	e.POST(cartEndPoint+"/:id/items", controllers.AddItemToCart)
+	e.GET(cartEndPoint+"/:id", controllers.GetCart)
+	e.DELETE(cartEndPoint+"/:cartId/items/:itemId", controllers.RemoveItemFromCart)
+	e.DELETE(cartEndPoint+"/:id", controllers.DeleteCart)
 
 	var cookies []*http.Cookie
 
@@ -235,7 +236,7 @@ func TestCartCRUD(t *testing.T) {
 }
 
 func createCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie) models.Cart {
-	req := httptest.NewRequest(http.MethodGet, "/cart", nil)
+	req := httptest.NewRequest(http.MethodGet, cartEndPoint, nil)
 	for _, c := range *cookies {
 		req.AddCookie(c)
 	}
@@ -301,7 +302,7 @@ func addItemsToCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie, cartID 
 	for i, pid := range productIDs {
 		item := map[string]interface{}{"productId": pid, "quantity": i + 1}
 		body, _ := json.Marshal(item)
-		req := httptest.NewRequest(http.MethodPost, "/cart/"+strconv.Itoa(int(cartID))+"/items", bytes.NewReader(body))
+		req := httptest.NewRequest(http.MethodPost, cartEndPoint+strconv.Itoa(int(cartID))+"/items", bytes.NewReader(body))
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 		for _, c := range *cookies {
 			req.AddCookie(c)
@@ -333,7 +334,7 @@ func addItemsToCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie, cartID 
 }
 
 func getCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie, cartID uint) models.Cart {
-	req := httptest.NewRequest(http.MethodGet, "/cart/"+strconv.Itoa(int(cartID)), nil)
+	req := httptest.NewRequest(http.MethodGet, cartEndPoint+strconv.Itoa(int(cartID)), nil)
 	for _, c := range *cookies {
 		req.AddCookie(c)
 	}
@@ -376,7 +377,7 @@ func removeAllItemsFromCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie,
 		t.Errorf("Expected cart to have items") //asercja 53
 	}
 	for _, item := range cart.CartItems {
-		req := httptest.NewRequest(http.MethodDelete, "/cart/"+strconv.Itoa(int(cartID))+"/items/"+strconv.Itoa(int(item.ID)), nil)
+		req := httptest.NewRequest(http.MethodDelete, cartEndPoint+strconv.Itoa(int(cartID))+"/items/"+strconv.Itoa(int(item.ID)), nil)
 		for _, c := range *cookies {
 			req.AddCookie(c)
 		}
@@ -390,7 +391,7 @@ func removeAllItemsFromCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie,
 }
 
 func deleteCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie, cartID uint) {
-	req := httptest.NewRequest(http.MethodDelete, "/cart/"+strconv.Itoa(int(cartID)), nil)
+	req := httptest.NewRequest(http.MethodDelete, cartEndPoint+strconv.Itoa(int(cartID)), nil)
 	for _, c := range *cookies {
 		req.AddCookie(c)
 	}
