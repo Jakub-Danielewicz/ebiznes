@@ -19,6 +19,8 @@ type CartRequest struct {
 	} `json:"items"`
 }
 
+const cartNotFound = "Cart not found"
+
 func GetOrCreateCart(c echo.Context) error {
 	sess, err := session.Get("session", c)
 	cartID, ok := sess.Values["cart_id"].(uint)
@@ -36,7 +38,7 @@ func GetOrCreateCart(c echo.Context) error {
 	if ok {
 		err := db.DB.Preload("CartItems.Product").First(&cart, cartID).Error
 		if err != nil {
-			return c.JSON(http.StatusNotFound, "Cart not found")
+			return c.JSON(http.StatusNotFound, cartNotFound)
 		} else {
 			return c.JSON(http.StatusOK, cart)
 		}
@@ -55,11 +57,11 @@ func GetCart(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 	var cart models.Cart
 	if err := db.DB.First(&cart, id).Error; err != nil {
-		return c.JSON(http.StatusNotFound, "Cart not found")
+		return c.JSON(http.StatusNotFound, cartNotFound)
 	}
 	err := db.DB.Preload("CartItems.Product").First(&cart, id).Error
 	if err != nil {
-		return c.JSON(http.StatusNotFound, "Cart not found")
+		return c.JSON(http.StatusNotFound, cartNotFound)
 	}
 
 	return c.JSON(http.StatusOK, cart)
@@ -117,7 +119,7 @@ func DeleteCart(c echo.Context) error {
 	db.DB.Where("cart_id=?", cartID).Delete(models.CartItem{})
 	var cart models.Cart
 	if err := db.DB.First(&cart, cartID).Error; err != nil {
-		return c.JSON(http.StatusNotFound, "Cart not found")
+		return c.JSON(http.StatusNotFound, cartNotFound)
 	}
 	if err := db.DB.Delete(&cart).Error; err != nil {
 		return c.JSON(http.StatusInternalServerError, "Failed to delete cart")
