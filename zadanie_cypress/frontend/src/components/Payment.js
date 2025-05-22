@@ -2,7 +2,7 @@ import React from "react";
 import { useCart } from "../context/CartContext";
 
 const Payment = () => {
-  const { items, clearCart } = useCart();
+  const { clearCart } = useCart();
 
   const handlePayment = () => {
     clearCart();
