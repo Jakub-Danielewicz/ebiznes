@@ -1,2 +1,54 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Output of the go build command
+/build/
+bin/
+vendor/
+
+# Dependency directories (remove the comment below if you use Go modules)
+# /vendor/
+
+# IDE/editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Database files
 shop.db
-go.sum
+
+# SonarQube
+.scannerwork/
+sonar-project.properties
+
+# Logs
+*.log
+
+# Test output
+*.coverprofile
+
+# Workspace settings
+*.code-workspace
+
+# Go coverage
+coverage.out
+
+# Go lint cache
+.golangci.yml
+
+# Ignore frontend build artifacts and dependencies
+../frontend/node_modules/
+../frontend/build/
+../frontend/.scannerwork/
+../frontend/.env

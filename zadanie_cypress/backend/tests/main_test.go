@@ -1,6 +1,3 @@
-// go
-// main_test.go
-
 package main
 
 import (
@@ -9,92 +6,93 @@ import (
 	"backend/models"
 	"bytes"
 	"encoding/json"
-	"github.com/gorilla/sessions"
-	"github.com/labstack/echo-contrib/session"
-	"github.com/labstack/echo/v4"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"fmt"
 	"strconv"
 	"testing"
+
+	"github.com/gorilla/sessions"
+	"github.com/labstack/echo-contrib/session"
+	"github.com/labstack/echo/v4"
 )
 
 const testDBFile = "shop.db"
 
 func setupTestDB() {
-    os.Remove(testDBFile)
-    db.ConnectDB()
-}
-
-func teardownTestDB() {
-    os.Remove(testDBFile)
+	os.Remove(testDBFile)
+	db.ConnectDB()
 }
 
 func TestMain(m *testing.M) {
-    setupTestDB()
-    code := m.Run()
-   // teardownTestDB()
-    os.Exit(code)
+	setupTestDB()
+	code := m.Run()
+	os.Exit(code)
 }
 
 func TestConnectDB(t *testing.T) {
-    defer func() {
-        if r := recover(); r != nil {
-            t.Errorf("ConnectDB panicked: %v", r) //asercja 1
-        }
-    }()
-    db.ConnectDB()
+	defer func() {
+		if r := recover(); r != nil {
+			t.Errorf("ConnectDB panicked: %v", r) //asercja 1
+		}
+	}()
+	db.ConnectDB()
 }
 
 func TestGetProducts_Empty(t *testing.T) {
-    e := echo.New()
-    req := httptest.NewRequest(http.MethodGet, "/products", nil)
-    rec := httptest.NewRecorder()
-    c := e.NewContext(req, rec)
-    err := controllers.GetProducts(c)
-    if err != nil {
-        t.Errorf("GetProducts returned error: %v", err) //asercja 2
-    }
-    if rec.Code != http.StatusOK {
-        t.Errorf("Expected status 200, got %d", rec.Code) //asercja 3
-    }
-    var products []models.Product
-    json.Unmarshal(rec.Body.Bytes(), &products)
-    if len(products) != 0 {
-        t.Errorf("Expected 0 products, got %d", len(products)) //asercja 4
-    }
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/products", nil)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	err := controllers.GetProducts(c)
+	if err != nil {
+		t.Errorf("GetProducts returned error: %v", err) //asercja 2
+	}
+	if rec.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", rec.Code) //asercja 3
+	}
+	var products []models.Product
+	err = json.Unmarshal(rec.Body.Bytes(), &products)
+	if err != nil {
+		t.Errorf("Failed to unmarshal response: %v", err)
+	}
+	if len(products) != 0 {
+		t.Errorf("Expected 0 products, got %d", len(products)) //asercja 4
+	}
 }
 
 func TestCreateProducts(t *testing.T) {
-    e := echo.New()
-    for i := 0; i < 10; i++ {
-        product := models.Product{Name: "P" + strconv.Itoa(i), Price: float64(i+1) * 10, CategoryID: 1}
-        body, _ := json.Marshal(product)
-        req := httptest.NewRequest(http.MethodPost, "/products", bytes.NewReader(body))
-        req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-        rec := httptest.NewRecorder()
-        c := e.NewContext(req, rec)
-        controllers.CreateProduct(c)
-        if rec.Code != http.StatusCreated {
-            t.Errorf("CreateProduct %d failed status %d", i, rec.Code) //asercja 5
-        }
-        var created models.Product
-        if err := json.Unmarshal(rec.Body.Bytes(), &created); err != nil {
-            t.Errorf("Failed to unmarshal created product: %v", err) //asercja 6
-        }
-        if created.Name != product.Name {
-            t.Errorf("Expected product name %s, got %s", product.Name, created.Name) //asercja 7
-        }
-        if created.Price != product.Price {
-            t.Errorf("Expected product price %f, got %f", product.Price, created.Price) //asercja 8
-        }
-        if created.ID == 0 {
-            t.Errorf("Expected product ID to be set, got 0") //asercja 9
-        }
-        if created.CategoryID != product.CategoryID {
-            t.Errorf("Expected product categoryID %d, got %d", product.CategoryID, created.CategoryID) //asercja 10
-        }
+	e := echo.New()
+	for i := 0; i < 10; i++ {
+		product := models.Product{Name: "P" + strconv.Itoa(i), Price: float64(i+1) * 10, CategoryID: 1}
+		body, _ := json.Marshal(product)
+		req := httptest.NewRequest(http.MethodPost, "/products", bytes.NewReader(body))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		if err := controllers.CreateProduct(c); err != nil {
+			t.Errorf("CreateProduct returned error: %v", err)
+		}
+		if rec.Code != http.StatusCreated {
+			t.Errorf("CreateProduct %d failed status %d", i, rec.Code) //asercja 5
+		}
+		var created models.Product
+		if err := json.Unmarshal(rec.Body.Bytes(), &created); err != nil {
+			t.Errorf("Failed to unmarshal created product: %v", err) //asercja 6
+		}
+		if created.Name != product.Name {
+			t.Errorf("Expected product name %s, got %s", product.Name, created.Name) //asercja 7
+		}
+		if created.Price != product.Price {
+			t.Errorf("Expected product price %f, got %f", product.Price, created.Price) //asercja 8
+		}
+		if created.ID == 0 {
+			t.Errorf("Expected product ID to be set, got 0") //asercja 9
+		}
+		if created.CategoryID != product.CategoryID {
+			t.Errorf("Expected product categoryID %d, got %d", product.CategoryID, created.CategoryID) //asercja 10
+		}
 		if created.CreatedAt.IsZero() {
 			t.Errorf("Expected product CreatedAt to be set, got zero") //asercja 11
 		}
@@ -107,40 +105,44 @@ func TestCreateProducts(t *testing.T) {
 		if created.CreatedAt != created.UpdatedAt {
 			t.Errorf("Expected product CreatedAt to be equal to UpdatedAt, got different values") //asercja 15
 		}
-    }
+	}
 }
 
 func TestGetProducts(t *testing.T) {
-    e := echo.New()
-    req := httptest.NewRequest(http.MethodGet, "/products", nil)
-    rec := httptest.NewRecorder()
-    c := e.NewContext(req, rec)
-    controllers.GetProducts(c)
-    var products []models.Product
-    json.Unmarshal(rec.Body.Bytes(), &products)
-    if len(products) < 10 {
-        t.Errorf("Expected at least 10 products, got %d", len(products)) //asercja 16
-    }
-    for i, p := range products {
-        if p.Name == "" {
-            t.Errorf("Product %d has empty name", i) //asercja 17
-        }
-        if p.Price < 0 {
-            t.Errorf("Product %d has negative price", i) //asercja 18
-        }
-        if p.ID == 0 {
-            t.Errorf("Product %d has ID 0", i) //asercja 19
-        }
-        if p.CategoryID == 0 {
-            t.Errorf("Product %d has categoryID 0", i) //asercja 20
-        }
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/products", nil)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
+	if err := controllers.GetProducts(c); err != nil {
+		t.Errorf("GetProducts returned error: %v", err)
+	}
+	var products []models.Product
+	if err := json.Unmarshal(rec.Body.Bytes(), &products); err != nil {
+		t.Errorf("Failed to unmarshal products: %v", err)
+	}
+	if len(products) < 10 {
+		t.Errorf("Expected at least 10 products, got %d", len(products)) //asercja 16
+	}
+	for i, p := range products {
+		if p.Name == "" {
+			t.Errorf("Product %d has empty name", i) //asercja 17
+		}
+		if p.Price < 0 {
+			t.Errorf("Product %d has negative price", i) //asercja 18
+		}
+		if p.ID == 0 {
+			t.Errorf("Product %d has ID 0", i) //asercja 19
+		}
+		if p.CategoryID == 0 {
+			t.Errorf("Product %d has categoryID 0", i) //asercja 20
+		}
 		if p.CreatedAt.IsZero() {
 			t.Errorf("Product %d has zero CreatedAt timestamp", i) //asercja 21
 		}
 		if p.UpdatedAt.IsZero() {
 			t.Errorf("Product %d has zero UpdatedAt timestamp", i) //asercja 22
 		}
-    }
+	}
 }
 
 func TestDeleteProduct(t *testing.T) {
@@ -149,9 +151,15 @@ func TestDeleteProduct(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/products", nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-	controllers.GetProducts(c)
+	err := controllers.GetProducts(c)
+	if err != nil {
+		t.Errorf("GetProducts returned error: %v", err)
+	}
 	var products []models.Product
-	json.Unmarshal(rec.Body.Bytes(), &products)
+	err = json.Unmarshal(rec.Body.Bytes(), &products)
+	if err != nil {
+		t.Errorf("Failed to unmarshal products: %v", err)
+	}
 	if len(products) == 0 {
 		t.Fatalf("No products found to delete") //asercja 23
 	}
@@ -162,7 +170,6 @@ func TestDeleteProduct(t *testing.T) {
 	fmt.Println("Deleting product with ID:", strconv.Itoa(int(productID)))
 	req = httptest.NewRequest(http.MethodDelete, "/products/"+strconv.Itoa(int(productID)), nil)
 	rec = httptest.NewRecorder()
-	c = e.NewContext(req, rec)
 	e.ServeHTTP(rec, req)
 	saveCookies(rec, nil)
 	if rec.Code != http.StatusNoContent {
@@ -176,69 +183,70 @@ func TestDeleteProduct_NotFound(t *testing.T) {
 	req := httptest.NewRequest(http.MethodDelete, "/products/99999", nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
-	controllers.DeleteProduct(c)
+	err := controllers.DeleteProduct(c)
+	if err != nil {
+		t.Errorf("DeleteProduct returned error: %v", err) //asercja 24
+	}
 	if rec.Code != http.StatusNotFound {
 		t.Errorf("Expected status 404, got %d", rec.Code) //asercja 26
-	}	
+	}
 }
 
-
 func TestCartCRUD(t *testing.T) {
-    e := echo.New()
-    e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
-    e.GET("/cart", controllers.GetOrCreateCart)
-    e.POST("/products", controllers.CreateProduct)
-    e.POST("/cart/:id/items", controllers.AddItemToCart)
-    e.GET("/cart/:id", controllers.GetCart)
-    e.DELETE("/cart/:cartId/items/:itemId", controllers.RemoveItemFromCart)
-    e.DELETE("/cart/:id", controllers.DeleteCart)
+	e := echo.New()
+	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
+	e.GET("/cart", controllers.GetOrCreateCart)
+	e.POST("/products", controllers.CreateProduct)
+	e.POST("/cart/:id/items", controllers.AddItemToCart)
+	e.GET("/cart/:id", controllers.GetCart)
+	e.DELETE("/cart/:cartId/items/:itemId", controllers.RemoveItemFromCart)
+	e.DELETE("/cart/:id", controllers.DeleteCart)
 
-    var cookies []*http.Cookie
+	var cookies []*http.Cookie
 
-    cart := createCart(t, e, &cookies)
-    
+	cart := createCart(t, e, &cookies)
 
-    productIDs := createProductsForCart(t, e, &cookies, 10)
-    if len(productIDs) != 10 {
-        t.Fatalf("Expected 10 product IDs, got %d", len(productIDs)) //asercja 27
-    }
+	productIDs := createProductsForCart(t, e, &cookies, 10)
+	if len(productIDs) != 10 {
+		t.Fatalf("Expected 10 product IDs, got %d", len(productIDs)) //asercja 27
+	}
 
-    addItemsToCart(t, e, &cookies, cart.ID, productIDs)
+	addItemsToCart(t, e, &cookies, cart.ID, productIDs)
 
-    cartResp := getCart(t, e, &cookies, cart.ID)
-    if len(cartResp.CartItems) != 10 {
-        t.Errorf("Expected 10 items in cart, got %d", len(cartResp.CartItems)) //asercja 28
-    }
+	cartResp := getCart(t, e, &cookies, cart.ID)
+	if len(cartResp.CartItems) != 10 {
+		t.Errorf("Expected 10 items in cart, got %d", len(cartResp.CartItems)) //asercja 28
+	}
 
-    removeAllItemsFromCart(t, e, &cookies, cart.ID)
+	removeAllItemsFromCart(t, e, &cookies, cart.ID)
 
-    cartResp = getCart(t, e, &cookies, cart.ID)
-    if len(cartResp.CartItems) != 0 {
-        t.Errorf("Expected 0 items in cart after removal, got %d", len(cartResp.CartItems)) //asercja 29
-    }
+	cartResp = getCart(t, e, &cookies, cart.ID)
+	if len(cartResp.CartItems) != 0 {
+		t.Errorf("Expected 0 items in cart after removal, got %d", len(cartResp.CartItems)) //asercja 29
+	}
 
-    deleteCart(t, e, &cookies, cart.ID)
+	deleteCart(t, e, &cookies, cart.ID)
 }
 
 func createCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie) models.Cart {
-    req := httptest.NewRequest(http.MethodGet, "/cart", nil)
-    for _, c := range *cookies {
-        req.AddCookie(c)
-    }
-    rec := httptest.NewRecorder()
-    e.ServeHTTP(rec, req)
-    saveCookies(rec, cookies)
+	req := httptest.NewRequest(http.MethodGet, "/cart", nil)
+	for _, c := range *cookies {
+		req.AddCookie(c)
+	}
+	rec := httptest.NewRecorder()
+	e.ServeHTTP(rec, req)
+	saveCookies(rec, cookies)
 
-    if rec.Code != http.StatusCreated && rec.Code != http.StatusOK {
-        t.Fatalf("Expected status 201 or 200, got %d", rec.Code) //asercja 30
-    }
-    var cart models.Cart
-    if err := json.Unmarshal(rec.Body.Bytes(), &cart); err != nil {
-        t.Fatalf("Failed to unmarshal cart: %v", err) //asercja 31
-    }
+	if rec.Code != http.StatusCreated && rec.Code != http.StatusOK {
+		t.Fatalf("Expected status 201 or 200, got %d", rec.Code) //asercja 30
+	}
+	var cart models.Cart
+	if err := json.Unmarshal(rec.Body.Bytes(), &cart); err != nil {
+		t.Fatalf("Failed to unmarshal cart: %v", err) //asercja 31
+	}
 	if cart.ID == 0 {
-        t.Fatalf("Cart ID should not be 0") //asercja 32
-    }
+		t.Fatalf("Cart ID should not be 0") //asercja 32
+	}
 	if cart.CartItems != nil {
 		t.Fatalf("Cart should not have items on creation") //asercja 33
 	}
@@ -254,49 +262,55 @@ func createCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie) models.Cart
 	if cart.DeletedAt.Valid {
 		t.Fatalf("Cart should not be deleted on creation") //asercja 37
 	}
-    return cart
+	return cart
 }
 
 func createProductsForCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie, n int) []uint {
-    productIDs := []uint{}
-    for i := 0; i < n; i++ {
-        product := models.Product{Name: "CartP" + strconv.Itoa(i), Price: float64(i+1) * 5, CategoryID: 1}
-        body, _ := json.Marshal(product)
-        req := httptest.NewRequest(http.MethodPost, "/products", bytes.NewReader(body))
-        req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-        for _, c := range *cookies {
-            req.AddCookie(c)
-        }
-        rec := httptest.NewRecorder()
-        e.ServeHTTP(rec, req)
-        saveCookies(rec, cookies)
-        if rec.Code != http.StatusCreated {
-            t.Errorf("CreateProduct %d failed, got %d", i, rec.Code) //asercja 38
-        }
-        var created models.Product
-        json.Unmarshal(rec.Body.Bytes(), &created)
-        productIDs = append(productIDs, created.ID)
-    }
-    return productIDs
+	productIDs := []uint{}
+	for i := 0; i < n; i++ {
+		product := models.Product{Name: "CartP" + strconv.Itoa(i), Price: float64(i+1) * 5, CategoryID: 1}
+		body, _ := json.Marshal(product)
+		req := httptest.NewRequest(http.MethodPost, "/products", bytes.NewReader(body))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		for _, c := range *cookies {
+			req.AddCookie(c)
+		}
+		rec := httptest.NewRecorder()
+		e.ServeHTTP(rec, req)
+		saveCookies(rec, cookies)
+		if rec.Code != http.StatusCreated {
+			t.Errorf("CreateProduct %d failed, got %d", i, rec.Code) //asercja 38
+		}
+		var created models.Product
+		err := json.Unmarshal(rec.Body.Bytes(), &created)
+		if err != nil {
+			t.Errorf("Failed to unmarshal created product: %v", err)
+		}
+		productIDs = append(productIDs, created.ID)
+	}
+	return productIDs
 }
 
 func addItemsToCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie, cartID uint, productIDs []uint) {
-    for i, pid := range productIDs {
-        item := map[string]interface{}{"productId": pid, "quantity": i + 1}
-        body, _ := json.Marshal(item)
-        req := httptest.NewRequest(http.MethodPost, "/cart/"+strconv.Itoa(int(cartID))+"/items", bytes.NewReader(body))
-        req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-        for _, c := range *cookies {
-            req.AddCookie(c)
-        }
-        rec := httptest.NewRecorder()
-        e.ServeHTTP(rec, req)
-        saveCookies(rec, cookies)
-        if rec.Code != http.StatusCreated {
-            t.Errorf("AddItemToCart %d failed, got %d", i, rec.Code) //asercja 39
-        }
+	for i, pid := range productIDs {
+		item := map[string]interface{}{"productId": pid, "quantity": i + 1}
+		body, _ := json.Marshal(item)
+		req := httptest.NewRequest(http.MethodPost, "/cart/"+strconv.Itoa(int(cartID))+"/items", bytes.NewReader(body))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		for _, c := range *cookies {
+			req.AddCookie(c)
+		}
+		rec := httptest.NewRecorder()
+		e.ServeHTTP(rec, req)
+		saveCookies(rec, cookies)
+		if rec.Code != http.StatusCreated {
+			t.Errorf("AddItemToCart %d failed, got %d", i, rec.Code) //asercja 39
+		}
 		var created models.CartItem
-		json.Unmarshal(rec.Body.Bytes(), &created)
+		err := json.Unmarshal(rec.Body.Bytes(), &created)
+		if err != nil {
+			t.Errorf("Failed to unmarshal created cart item: %v", err)
+		}
 		if created.ID == 0 {
 			t.Errorf("Expected cart item ID to be set, got 0") //asercja 40
 		}
@@ -315,22 +329,25 @@ func addItemsToCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie, cartID 
 		if created.DeletedAt.Valid {
 			t.Errorf("Cart item should not be deleted on creation") //asercja 45
 		}
-    }
+	}
 }
 
 func getCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie, cartID uint) models.Cart {
-    req := httptest.NewRequest(http.MethodGet, "/cart/"+strconv.Itoa(int(cartID)), nil)
-    for _, c := range *cookies {
-        req.AddCookie(c)
-    }
-    rec := httptest.NewRecorder()
-    e.ServeHTTP(rec, req)
-    saveCookies(rec, cookies)
-    if rec.Code != http.StatusOK {
-        t.Errorf("Expected status 200, got %d", rec.Code) //asercja 46
-    }
-    var cart models.Cart
-    json.Unmarshal(rec.Body.Bytes(), &cart)
+	req := httptest.NewRequest(http.MethodGet, "/cart/"+strconv.Itoa(int(cartID)), nil)
+	for _, c := range *cookies {
+		req.AddCookie(c)
+	}
+	rec := httptest.NewRecorder()
+	e.ServeHTTP(rec, req)
+	saveCookies(rec, cookies)
+	if rec.Code != http.StatusOK {
+		t.Errorf("Expected status 200, got %d", rec.Code) //asercja 46
+	}
+	var cart models.Cart
+	err := json.Unmarshal(rec.Body.Bytes(), &cart)
+	if err != nil {
+		t.Errorf("Failed to unmarshal cart: %v", err)
+	}
 	if cart.ID == 0 {
 		t.Errorf("Expected cart ID to be set, got 0") //asercja 47
 	}
@@ -349,55 +366,54 @@ func getCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie, cartID uint) m
 	if cart.DeletedAt.Valid {
 		t.Errorf("Cart should not be deleted, got deleted") //asercja 52
 	}
-    
-    return cart
+
+	return cart
 }
 
 func removeAllItemsFromCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie, cartID uint) {
-    cart := getCart(t, e, cookies, cartID)
-    if len(cart.CartItems) == 0 {
-        t.Errorf("Expected cart to have items") //asercja 53
-    }
-    for _, item := range cart.CartItems {
-        req := httptest.NewRequest(http.MethodDelete, "/cart/"+strconv.Itoa(int(cartID))+"/items/"+strconv.Itoa(int(item.ID)), nil)
-        for _, c := range *cookies {
-            req.AddCookie(c)
-        }
-        rec := httptest.NewRecorder()
-        e.ServeHTTP(rec, req)
-        saveCookies(rec, cookies)
-        if rec.Code != http.StatusNoContent {
-            t.Errorf("RemoveItemFromCart failed for item %d, got %d", item.ID, rec.Code) //asercja 54
-        }
-    }
+	cart := getCart(t, e, cookies, cartID)
+	if len(cart.CartItems) == 0 {
+		t.Errorf("Expected cart to have items") //asercja 53
+	}
+	for _, item := range cart.CartItems {
+		req := httptest.NewRequest(http.MethodDelete, "/cart/"+strconv.Itoa(int(cartID))+"/items/"+strconv.Itoa(int(item.ID)), nil)
+		for _, c := range *cookies {
+			req.AddCookie(c)
+		}
+		rec := httptest.NewRecorder()
+		e.ServeHTTP(rec, req)
+		saveCookies(rec, cookies)
+		if rec.Code != http.StatusNoContent {
+			t.Errorf("RemoveItemFromCart failed for item %d, got %d", item.ID, rec.Code) //asercja 54
+		}
+	}
 }
 
 func deleteCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie, cartID uint) {
-    req := httptest.NewRequest(http.MethodDelete, "/cart/"+strconv.Itoa(int(cartID)), nil)
-    for _, c := range *cookies {
-        req.AddCookie(c)
-    }
-    rec := httptest.NewRecorder()
-    e.ServeHTTP(rec, req)
-    saveCookies(rec, cookies)
-    if rec.Code != http.StatusNoContent {
-        t.Errorf("DeleteCart failed, got %d", rec.Code) //asercja 55
-    }
+	req := httptest.NewRequest(http.MethodDelete, "/cart/"+strconv.Itoa(int(cartID)), nil)
+	for _, c := range *cookies {
+		req.AddCookie(c)
+	}
+	rec := httptest.NewRecorder()
+	e.ServeHTTP(rec, req)
+	saveCookies(rec, cookies)
+	if rec.Code != http.StatusNoContent {
+		t.Errorf("DeleteCart failed, got %d", rec.Code) //asercja 55
+	}
 }
 
 func saveCookies(rec *httptest.ResponseRecorder, cookies *[]*http.Cookie) {
-    for _, setCookie := range rec.Result().Cookies() {
-        found := false
-        for i, c := range *cookies {
-            if c.Name == setCookie.Name {
-                (*cookies)[i] = setCookie
-                found = true
-                break
-            }
-        }
-        if !found {
-            *cookies = append(*cookies, setCookie)
-        }
-    }
+	for _, setCookie := range rec.Result().Cookies() {
+		found := false
+		for i, c := range *cookies {
+			if c.Name == setCookie.Name {
+				(*cookies)[i] = setCookie
+				found = true
+				break
+			}
+		}
+		if !found {
+			*cookies = append(*cookies, setCookie)
+		}
+	}
 }
-

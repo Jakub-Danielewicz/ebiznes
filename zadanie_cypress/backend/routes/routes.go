@@ -2,6 +2,7 @@ package routes
 
 import (
 	"backend/controllers"
+
 	"github.com/labstack/echo/v4"
 )
 
@@ -16,4 +17,3 @@ func RegisterRoutes(e *echo.Echo) {
 	e.DELETE("/cart/:cartId/items/:itemId", controllers.RemoveItemFromCart)
 	e.DELETE("/cart/:id", controllers.DeleteCart)
 }
-

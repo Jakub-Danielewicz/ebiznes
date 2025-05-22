@@ -14,7 +14,7 @@ func ConnectDB() {
 		panic("failed to connect to database")
 	}
 
-	database.AutoMigrate(
+	err = database.AutoMigrate(
 		&models.Product{},
 		&models.Category{},
 		&models.Cart{},
@@ -22,10 +22,12 @@ func ConnectDB() {
 		&models.Order{},
 		&models.CartItem{},
 	)
+	if err != nil {
+		panic("failed to migrate database: " + err.Error())
+	}
 
 	DB = database
 
-	
 	var count int64
 	DB.Model(&models.Category{}).Count(&count)
 	if count == 0 {
