@@ -22,6 +22,8 @@ const testDBFile = "shop.db"
 const productsEndPoint = "/products"
 const cartEndPoint = "/cart"
 
+const errGetProducts = "GetProducts returned error: %v"
+
 func setupTestDB() {
 	os.Remove(testDBFile)
 	db.ConnectDB()
@@ -49,7 +51,7 @@ func TestGetProductsEmpty(t *testing.T) {
 	c := e.NewContext(req, rec)
 	err := controllers.GetProducts(c)
 	if err != nil {
-		t.Errorf("GetProducts returned error: %v", err) //asercja 2
+		t.Errorf(errGetProducts, err) //asercja 2
 	}
 	if rec.Code != http.StatusOK {
 		t.Errorf("Expected status 200, got %d", rec.Code) //asercja 3
@@ -121,7 +123,7 @@ func TestGetProducts(t *testing.T) {
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	if err := controllers.GetProducts(c); err != nil {
-		t.Errorf("GetProducts returned error: %v", err)
+		t.Errorf(errGetProducts, err)
 	}
 	var products []models.Product
 	if err := json.Unmarshal(rec.Body.Bytes(), &products); err != nil {
@@ -160,7 +162,7 @@ func TestDeleteProduct(t *testing.T) {
 	c := e.NewContext(req, rec)
 	err := controllers.GetProducts(c)
 	if err != nil {
-		t.Errorf("GetProducts returned error: %v", err)
+		t.Errorf(errGetProducts, err)
 	}
 	var products []models.Product
 	err = json.Unmarshal(rec.Body.Bytes(), &products)
