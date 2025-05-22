@@ -302,7 +302,7 @@ func addItemsToCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie, cartID 
 	for i, pid := range productIDs {
 		item := map[string]interface{}{"productId": pid, "quantity": i + 1}
 		body, _ := json.Marshal(item)
-		req := httptest.NewRequest(http.MethodPost, cartEndPoint+strconv.Itoa(int(cartID))+"/items", bytes.NewReader(body))
+		req := httptest.NewRequest(http.MethodPost, cartEndPoint+"/"+strconv.Itoa(int(cartID))+"/items", bytes.NewReader(body))
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 		for _, c := range *cookies {
 			req.AddCookie(c)
@@ -334,7 +334,7 @@ func addItemsToCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie, cartID 
 }
 
 func getCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie, cartID uint) models.Cart {
-	req := httptest.NewRequest(http.MethodGet, cartEndPoint+strconv.Itoa(int(cartID)), nil)
+	req := httptest.NewRequest(http.MethodGet, cartEndPoint+"/"+strconv.Itoa(int(cartID)), nil)
 	for _, c := range *cookies {
 		req.AddCookie(c)
 	}
@@ -377,7 +377,7 @@ func removeAllItemsFromCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie,
 		t.Errorf("Expected cart to have items") //asercja 53
 	}
 	for _, item := range cart.CartItems {
-		req := httptest.NewRequest(http.MethodDelete, cartEndPoint+strconv.Itoa(int(cartID))+"/items/"+strconv.Itoa(int(item.ID)), nil)
+		req := httptest.NewRequest(http.MethodDelete, cartEndPoint+"/"+strconv.Itoa(int(cartID))+"/items/"+strconv.Itoa(int(item.ID)), nil)
 		for _, c := range *cookies {
 			req.AddCookie(c)
 		}
@@ -391,7 +391,7 @@ func removeAllItemsFromCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie,
 }
 
 func deleteCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie, cartID uint) {
-	req := httptest.NewRequest(http.MethodDelete, cartEndPoint+strconv.Itoa(int(cartID)), nil)
+	req := httptest.NewRequest(http.MethodDelete, cartEndPoint+"/"+strconv.Itoa(int(cartID)), nil)
 	for _, c := range *cookies {
 		req.AddCookie(c)
 	}
