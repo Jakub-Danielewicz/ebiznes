@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useMemo } from "react";
 import { api } from "../api";
 import PropTypes from "prop-types";
 
@@ -66,11 +66,22 @@ export const CartProvider = ({ children }) => {
       .catch(err => console.error("Nie wyczyszczono koszyka:", err));
   };
 
+  const contextValue = useMemo(
+    () => ({
+      cartId,
+      items,
+      addItem,
+      removeItem,
+      clearCart,
+      fetchCartItems,
+    }),
+    [cartId, items]
+  );
+
   return (
-    <CartContext.Provider value={{ cartId, items, addItem, removeItem, clearCart, fetchCartItems }}>
+    <CartContext.Provider value={contextValue}>
       {children}
     </CartContext.Provider>
-
   );
 };
 CartProvider.propTypes = {
