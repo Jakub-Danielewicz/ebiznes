@@ -203,7 +203,7 @@ func TestCartCRUD(t *testing.T) {
 	e := echo.New()
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
 	e.GET(cartEndPoint, controllers.GetOrCreateCart)
-	e.POST("/products", controllers.CreateProduct)
+	e.POST(productsEndPoint, controllers.CreateProduct)
 	e.POST(cartEndPoint+"/:id/items", controllers.AddItemToCart)
 	e.GET(cartEndPoint+"/:id", controllers.GetCart)
 	e.DELETE(cartEndPoint+"/:cartId/items/:itemId", controllers.RemoveItemFromCart)
@@ -277,7 +277,7 @@ func createProductsForCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie, 
 	for i := 0; i < n; i++ {
 		product := models.Product{Name: "CartP" + strconv.Itoa(i), Price: float64(i+1) * 5, CategoryID: 1}
 		body, _ := json.Marshal(product)
-		req := httptest.NewRequest(http.MethodPost, "/products", bytes.NewReader(body))
+		req := httptest.NewRequest(http.MethodPost, productsEndPoint, bytes.NewReader(body))
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 		for _, c := range *cookies {
 			req.AddCookie(c)
