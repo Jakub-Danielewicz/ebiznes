@@ -81,31 +81,36 @@ func TestCreateProducts(t *testing.T) {
 		var created models.Product
 		if err := json.Unmarshal(rec.Body.Bytes(), &created); err != nil {
 			t.Errorf("Failed to unmarshal created product: %v", err) //asercja 6
+			continue
 		}
-		if created.Name != product.Name {
-			t.Errorf("Expected product name %s, got %s", product.Name, created.Name) //asercja 7
-		}
-		if created.Price != product.Price {
-			t.Errorf("Expected product price %f, got %f", product.Price, created.Price) //asercja 8
-		}
-		if created.ID == 0 {
-			t.Errorf("Expected product ID to be set, got 0") //asercja 9
-		}
-		if created.CategoryID != product.CategoryID {
-			t.Errorf("Expected product categoryID %d, got %d", product.CategoryID, created.CategoryID) //asercja 10
-		}
-		if created.CreatedAt.IsZero() {
-			t.Errorf("Expected product CreatedAt to be set, got zero") //asercja 11
-		}
-		if created.UpdatedAt.IsZero() {
-			t.Errorf("Expected product UpdatedAt to be set, got zero") //asercja 12
-		}
-		if created.DeletedAt.Valid {
-			t.Errorf("Expected product DeletedAt to be invalid, got valid") //asercja 13
-		}
-		if created.CreatedAt != created.UpdatedAt {
-			t.Errorf("Expected product CreatedAt to be equal to UpdatedAt, got different values") //asercja 15
-		}
+		assertProductCreated(t, product, created, i)
+	}
+}
+
+func assertProductCreated(t *testing.T, expected, actual models.Product, i int) {
+	if actual.Name != expected.Name {
+		t.Errorf("Expected product name %s, got %s", expected.Name, actual.Name) //asercja 7
+	}
+	if actual.Price != expected.Price {
+		t.Errorf("Expected product price %f, got %f", expected.Price, actual.Price) //asercja 8
+	}
+	if actual.ID == 0 {
+		t.Errorf("Expected product ID to be set, got 0") //asercja 9
+	}
+	if actual.CategoryID != expected.CategoryID {
+		t.Errorf("Expected product categoryID %d, got %d", expected.CategoryID, actual.CategoryID) //asercja 10
+	}
+	if actual.CreatedAt.IsZero() {
+		t.Errorf("Expected product CreatedAt to be set, got zero") //asercja 11
+	}
+	if actual.UpdatedAt.IsZero() {
+		t.Errorf("Expected product UpdatedAt to be set, got zero") //asercja 12
+	}
+	if actual.DeletedAt.Valid {
+		t.Errorf("Expected product DeletedAt to be invalid, got valid") //asercja 13
+	}
+	if actual.CreatedAt != actual.UpdatedAt {
+		t.Errorf("Expected product CreatedAt to be equal to UpdatedAt, got different values") //asercja 15
 	}
 }
 
