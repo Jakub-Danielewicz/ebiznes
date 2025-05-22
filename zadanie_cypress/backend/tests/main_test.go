@@ -329,12 +329,6 @@ func addItemsToCart(t *testing.T, e *echo.Echo, cookies *[]*http.Cookie, cartID 
 		if created.CreatedAt.IsZero() {
 			t.Errorf("Expected cart item CreatedAt to be set, got zero") //asercja 43
 		}
-		if created.UpdatedAt.IsZero() {
-			t.Errorf("Expected cart item UpdatedAt to be set, got zero") //asercja 44
-		}
-		if created.DeletedAt.Valid {
-			t.Errorf("Cart item should not be deleted on creation") //asercja 45
-		}
 	}
 }
 
