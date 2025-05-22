@@ -19,6 +19,7 @@ import (
 )
 
 const testDBFile = "shop.db"
+const productsEndPoint = "/products"
 
 func setupTestDB() {
 	os.Remove(testDBFile)
@@ -34,7 +35,7 @@ func TestMain(m *testing.M) {
 func TestConnectDB(t *testing.T) {
 	defer func() {
 		if r := recover(); r != nil {
-			t.Errorf("ConnectDB panicked: %v", r) //asercja 1
+			t.Errorf("ConnectDB paicked: %v", r) //asercja 1
 		}
 	}()
 	db.ConnectDB()
@@ -42,7 +43,7 @@ func TestConnectDB(t *testing.T) {
 
 func TestGetProductsEmpty(t *testing.T) {
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodGet, "/products", nil)
+	req := httptest.NewRequest(http.MethodGet, productsEndPoint, nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	err := controllers.GetProducts(c)
@@ -67,7 +68,7 @@ func TestCreateProducts(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		product := models.Product{Name: "P" + strconv.Itoa(i), Price: float64(i+1) * 10, CategoryID: 1}
 		body, _ := json.Marshal(product)
-		req := httptest.NewRequest(http.MethodPost, "/products", bytes.NewReader(body))
+		req := httptest.NewRequest(http.MethodPost, productsEndPoint, bytes.NewReader(body))
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 		rec := httptest.NewRecorder()
 		c := e.NewContext(req, rec)
@@ -110,7 +111,7 @@ func TestCreateProducts(t *testing.T) {
 
 func TestGetProducts(t *testing.T) {
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodGet, "/products", nil)
+	req := httptest.NewRequest(http.MethodGet, productsEndPoint, nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	if err := controllers.GetProducts(c); err != nil {
@@ -147,8 +148,8 @@ func TestGetProducts(t *testing.T) {
 
 func TestDeleteProduct(t *testing.T) {
 	e := echo.New()
-	e.DELETE("/products/:id", controllers.DeleteProduct)
-	req := httptest.NewRequest(http.MethodGet, "/products", nil)
+	e.DELETE(productsEndPoint+"/:id", controllers.DeleteProduct)
+	req := httptest.NewRequest(http.MethodGet, productsEndPoint, nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	err := controllers.GetProducts(c)
@@ -168,7 +169,7 @@ func TestDeleteProduct(t *testing.T) {
 		t.Fatalf("Product ID is 0") //asercja 24
 	}
 	fmt.Println("Deleting product with ID:", strconv.Itoa(int(productID)))
-	req = httptest.NewRequest(http.MethodDelete, "/products/"+strconv.Itoa(int(productID)), nil)
+	req = httptest.NewRequest(http.MethodDelete, productsEndPoint+"/"+strconv.Itoa(int(productID)), nil)
 	rec = httptest.NewRecorder()
 	e.ServeHTTP(rec, req)
 	saveCookies(rec, nil)
@@ -179,8 +180,8 @@ func TestDeleteProduct(t *testing.T) {
 
 func TestDeleteProduct_NotFound(t *testing.T) {
 	e := echo.New()
-	e.DELETE("/products/:id", controllers.DeleteProduct)
-	req := httptest.NewRequest(http.MethodDelete, "/products/99999", nil)
+	e.DELETE(productsEndPoint+"/:id", controllers.DeleteProduct)
+	req := httptest.NewRequest(http.MethodDelete, productsEndPoint+"/99999", nil)
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 	err := controllers.DeleteProduct(c)
