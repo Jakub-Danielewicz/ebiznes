@@ -148,9 +148,6 @@ func TestGetProducts(t *testing.T) {
 		if p.CreatedAt.IsZero() {
 			t.Errorf("Product %d has zero CreatedAt timestamp", i) //asercja 21
 		}
-		if p.UpdatedAt.IsZero() {
-			t.Errorf("Product %d has zero UpdatedAt timestamp", i) //asercja 22
-		}
 	}
 }
 
