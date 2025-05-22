@@ -40,7 +40,7 @@ func TestConnectDB(t *testing.T) {
 	db.ConnectDB()
 }
 
-func TestGetProducts_Empty(t *testing.T) {
+func TestGetProductsEmpty(t *testing.T) {
 	e := echo.New()
 	req := httptest.NewRequest(http.MethodGet, "/products", nil)
 	rec := httptest.NewRecorder()
