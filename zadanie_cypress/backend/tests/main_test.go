@@ -183,7 +183,7 @@ func TestDeleteProduct(t *testing.T) {
 	}
 }
 
-func TestDeleteProduct_NotFound(t *testing.T) {
+func TestDeleteProductNotFound(t *testing.T) {
 	e := echo.New()
 	e.DELETE(productsEndPoint+"/:id", controllers.DeleteProduct)
 	req := httptest.NewRequest(http.MethodDelete, productsEndPoint+"/99999", nil)
