@@ -100,8 +100,8 @@ aplikacji serwerowej) [![Code Smells](https://sonarcloud.io/api/project_badges/m
 ✅ 4.5 Należy wyeliminować wszystkie podatności oraz błędy bezpieczeństwa
 w kodzie w Sonarze (kod aplikacji serwerowej) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=danielewicz_jakub_danielewicz&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=danielewicz_jakub_danielewicz) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=danielewicz_jakub_danielewicz&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=danielewicz_jakub_danielewicz)
 
-❌ 5.0 Należy wyeliminować wszystkie błędy oraz zapaszki w kodzie
-aplikacji klienckiej
+✅ 5.0 Należy wyeliminować wszystkie błędy oraz zapaszki w kodzie 
+aplikacji klienckiej  [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Jakub_Danielewicz&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Jakub_Danielewicz) [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Jakub_Danielewicz&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Jakub_Danielewicz) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Jakub_Danielewicz&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=Jakub_Danielewicz)
 
 Kod: [folder](https://github.com/Jakub-Danielewicz/ebiznes/tree/master/zadanie_cypress)
 
