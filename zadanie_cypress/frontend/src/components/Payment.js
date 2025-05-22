@@ -1,6 +1,5 @@
 import React from "react";
 import { useCart } from "../context/CartContext";
-import { api } from "../api";
 
 const Payment = () => {
   const { items, clearCart } = useCart();
