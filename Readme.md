@@ -105,7 +105,7 @@ aplikacji klienckiej  [![Bugs](https://sonarcloud.io/api/project_badges/measure?
 
 Kod: [folder](https://github.com/Jakub-Danielewicz/ebiznes/tree/master/zadanie_cypress)
 
-## Zadanie 6 Oauth2
+## Zadanie 8 Oauth2
 
 ✅ 3.0 logowanie przez aplikację serwerową (bez Oauth2)
 ✅ 3.5 rejestracja przez aplikację serwerową (bez Oauth2)
