@@ -105,3 +105,15 @@ aplikacji klienckiej  [![Bugs](https://sonarcloud.io/api/project_badges/measure?
 
 Kod: [folder](https://github.com/Jakub-Danielewicz/ebiznes/tree/master/zadanie_cypress)
 
+## Zadanie 6 Oauth2
+
+✅ 3.0 logowanie przez aplikację serwerową (bez Oauth2)
+✅ 3.5 rejestracja przez aplikację serwerową (bez Oauth2)
+
+✅ 4.0 logowanie via Google OAuth2
+
+✅ 4.5 ogowanie via Facebook lub Github OAuth2
+✅ 5.0 zapisywanie danych logowania OAuth2 po stronie serwera
+
+Kod: [folder](https://github.com/Jakub-Danielewicz/ebiznes/tree/master/zadanie_oauth2)
+
