@@ -119,3 +119,21 @@ Kod: [folder](https://github.com/Jakub-Danielewicz/ebiznes/tree/master/zadanie_c
 
 Kod: [folder](https://github.com/Jakub-Danielewicz/ebiznes/tree/master/zadanie_oauth2)
 
+## Zadanie 9 ChatGPT bot
+
+✅ 3.0 należy stworzyć po stronie serwerowej osobny serwis do łącznia z
+chatGPT do usługi chat (wykorzystano google gemini)
+
+✅ 3.5 należy stworzyć interfejs frontowy dla użytkownika, który
+komunikuje się z serwisem; odpowiedzi powinny być wysyałen do
+frontendowego interfejsu
+
+❌/✅ 4.0 stworzyć listę 5 różnych otwarć oraz zamknięć rozmowy
+
+✅ 4.5 filtrowanie po zagadnieniach związanych ze sklepem (np.
+ograniczenie się jedynie do ubrań oraz samego sklepu) do GPT
+
+❌ 5.0 filtrowanie odpowiedzi po sentymencie
+
+Kod: [folder](https://github.com/Jakub-Danielewicz/ebiznes/tree/master/zadanie_LLM)
+
