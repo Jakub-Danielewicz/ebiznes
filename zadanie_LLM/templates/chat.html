@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Czat ze sklepem</title>
+</head>
+<body>
+    <h1>Czat ze sklepem</h1>
+    <div>
+        {% for author, message in chat_history %}
+            <b>{{ author }}:</b> {{ message }}<br>
+        {% endfor %}
+    </div>
+    <form method="post">
+        <input type="text" name="message" autofocus required>
+        <button type="submit">Wyślij</button>
+    </form>
+</body>
+</html>
