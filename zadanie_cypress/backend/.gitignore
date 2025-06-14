@@ -25,8 +25,7 @@ vendor/
 .DS_Store
 Thumbs.db
 
-# Database files
-shop.db
+
 
 # SonarQube
 .scannerwork/
