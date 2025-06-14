@@ -23,13 +23,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set lowercase owner
+        id: lcowner
+        run: echo "owner=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
       - name: Build and push backend
         uses: docker/build-push-action@v4
         with:
           context: ./zadanie_cypress/backend
           file: ./zadanie_cypress/backend/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/ebiznes-backend:latest
+          tags: ghcr.io/${{ steps.lcowner.outputs.owner }}/ebiznes-backend:latest
 
       - name: Build and push frontend
         uses: docker/build-push-action@v4
@@ -37,7 +41,7 @@ jobs:
           context: ./zadanie_cypress/frontend
           file: ./zadanie_cypress/frontend/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/ebiznes-frontend:latest
+          tags: ghcr.io/${{ steps.lcowner.outputs.owner }}/ebiznes-frontend:latest
 
   deploy:
     needs: build-and-push
@@ -52,13 +56,13 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           publish-profile: ${{ secrets.BACKEND_PUBLISH_PROFILE }}
-          images: ghcr.io/${{ github.repository_owner }}/ebiznes-backend:latest
+          images: ghcr.io/${{ steps.lcowner.outputs.owner }}/ebiznes-backend:latest
 
       - name: Deploy frontend to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           publish-profile: ${{ secrets.FRONTEND_PUBLISH_PROFILE }}
-          images: ghcr.io/${{ github.repository_owner }}/ebiznes-frontend:latest
+          images: ghcr.io/${{ steps.lcowner.outputs.owner }}/ebiznes-frontend:latest
 
   cypress-tests:
     needs: deploy
