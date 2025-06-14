@@ -4,6 +4,7 @@ import (
 	"backend/db"
 	"backend/routes"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
