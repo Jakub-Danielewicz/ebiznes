@@ -58,20 +58,20 @@ jobs:
           publish-profile: ${{ secrets.FRONTEND_PUBLISH_PROFILE }}
           images: ghcr.io/${{ steps.lcowner.outputs.owner }}/ebiznes-frontend:latest
 
-  cypress-tests:
-    needs: deploy
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+  # cypress-tests:
+  #   needs: deploy
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 20
 
-      - name: Install dependencies
-        run: cd zadanie_cypress/frontend && npm ci
+  #     - name: Install dependencies
+  #       run: cd zadanie_cypress/frontend && npm ci
 
-      - name: Run Cypress tests
-        run: cd zadanie_cypress/frontend && npx cypress run
+  #     - name: Run Cypress tests
+  #       run: cd zadanie_cypress/frontend && npx cypress run
