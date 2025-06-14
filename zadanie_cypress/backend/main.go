@@ -14,7 +14,7 @@ import (
 func main() {
 	e := echo.New()
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     []string{os.Getenv("ALLOWED_ORIGIN")},
 		AllowMethods:     []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete},
 		AllowCredentials: true,
 	}))
