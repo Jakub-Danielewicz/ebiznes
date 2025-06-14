@@ -52,14 +52,14 @@ jobs:
         with:
           app-name: 'ebiznesbackend'
           publish-profile: ${{ secrets.BACKEND_PUBLISH_PROFILE }}
-          images: ghcr.io/${{ steps.lcowner.outputs.owner }}/ebiznes-backend:latest
+          images: ghcr.io/jakub-danielewicz/ebiznes-backend:latest
 
       - name: Deploy frontend to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'ebiznesfrontend'
           publish-profile: ${{ secrets.FRONTEND_PUBLISH_PROFILE }}
-          images: ghcr.io/${{ steps.lcowner.outputs.owner }}/ebiznes-frontend:latest
+          images: ghcr.io/jakub-danielewicz/ebiznes-frontend:latest
 
   # cypress-tests:
   #   needs: deploy
