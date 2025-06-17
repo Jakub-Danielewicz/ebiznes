@@ -137,3 +137,28 @@ ograniczenie się jedynie do ubrań oraz samego sklepu) do GPT
 
 Kod: [folder](https://github.com/Jakub-Danielewicz/ebiznes/tree/master/zadanie_LLM)
 
+## Zadanie 10 Chmura/CI
+
+✅ 3.0 Należy stworzyć odpowiednie instancje po stronie chmury na
+dockerze (wykorzystano Azure)
+
+✅ 3.5 Stworzyć odpowiedni pipeline w Github Actions do budowania
+aplikacji (np. via fatjar)
+
+❌/✅ 4.0 Dodać notyfikację mailową o zbudowaniu aplikacji (jest notyfikacja domyślna o failu)
+
+✅ 4.5 Dodać krok z deploymentem aplikacji serwerowej oraz klienckiej na
+chmurę
+
+❌ 5.0  Dodać uruchomienie regresyjnych testów automatycznych
+(funkcjonalnych) jako krok w Actions
+
+Kod: [folder](https://github.com/Jakub-Danielewicz/ebiznes/tree/master/zadanie_cypress)
+
+### Aplikacja:
+
+[Backend](https://ebiznesbackend-fgccdnbpavhwcqb9.polandcentral-01.azurewebsites.net/products)
+
+[Frontend](https://ebiznesfrontend-avava9gvhhhubghz.polandcentral-01.azurewebsites.net/) -- Koszyk póki co nie działa bo nginx w Dockerfile nie jest konfigurowany pod SPA
+
+
