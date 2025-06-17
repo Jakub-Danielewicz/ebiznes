@@ -33,4 +33,8 @@ func ConnectDB() {
 	if count == 0 {
 		DB.Create(&models.Category{Name: "Test category"})
 	}
+	DB.Model(&models.Product{}).Count(&count)
+	if count == 0 {
+		DB.Create(&models.Product{Name: "Test product", Price: 9.99, CategoryID: 1})
+	}
 }
