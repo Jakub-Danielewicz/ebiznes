@@ -14,10 +14,10 @@ jobs:
 
       - name: Create .env file for backend
         run:  |
-           echo "ALLOWED_ORIGIN=https://ebiznesfrontend-avava9gvhhhubghz.polandcentral-01.azurewebsites.net" > ./backend/.env
+           echo "ALLOWED_ORIGIN=https://ebiznesfrontend-avava9gvhhhubghz.polandcentral-01.azurewebsites.net" > zadanie_cypress/backend/.env
       - name: Create .env file for backend
         run:  |
-           echo "REACT_APP_API_URL=https://ebiznesbackend-fgccdnbpavhwcqb9.polandcentral-01.azurewebsites.net" > ./frontend/.env
+           echo "REACT_APP_API_URL=https://ebiznesbackend-fgccdnbpavhwcqb9.polandcentral-01.azurewebsites.net" > zadanie_cypress/frontend/.env
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
