@@ -13,7 +13,6 @@ import (
 )
 
 func main() {
-	println("ALLOWED_ORIGIN:", os.Getenv("ALLOWED_ORIGIN"))
 	e := echo.New()
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{os.Getenv("ALLOWED_ORIGIN")},
